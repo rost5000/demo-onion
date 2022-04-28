@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package sample.v1.models;
+
+import "google/api/annotations.proto";
+import "sample/v1/models/simple_sample_model.proto";
+
+option go_package = "github.com/ovp/protos/demo-onion";
+option java_package = "ru.rost.sample";
+option java_multiple_files = true;
+
+
+service SimpleSample {
+  rpc GetSimpleSample(GetSimpleSampleRequest) returns (GetSimpleSampleResponse) {
+    option (google.api.http) = {
+      get: "/api/get_simple_request";
+    };
+  }
+}
+
+message GetSimpleSampleRequest{
+}
+
+message GetSimpleSampleResponse {
+  repeated models.SimpleSampleModel sample = 1;
+}

@@ -1,0 +1,109 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id "com.google.protobuf"
+    id 'com.github.johnrengelman.shadow'
+    id "org.openapi.generator"
+}
+
+dependencies {
+    implementation(
+            "org.springframework.boot:spring-boot-starter-web",
+            "javax.validation:validation-api:$javaxValidationVersion",
+            'org.openapitools:jackson-databind-nullable:0.2.2',
+            "io.springfox:springfox-swagger2:$swaggerVersion",
+            "com.google.protobuf:protobuf-java:$protobufJavaVersion",
+            "com.google.api.grpc:proto-google-common-protos:$protoGoogleCommons",
+            "javax.annotation:javax.annotation-api:$javaxAnnotationVersion",
+            "io.grpc:protoc-gen-grpc-java:$grpcVersion",
+            "io.grpc:grpc-netty-shaded:$grpcVersion",
+            "io.grpc:grpc-protobuf:$grpcVersion",
+            "io.grpc:grpc-stub:$grpcVersion",
+    )
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'build/generated/source/proto/main/java'
+            srcDirs += 'build/generated/source/proto/main/grpc'
+            srcDirs += 'build/generated-swagger/src/main/java'
+            srcDirs += 'build/java-client/src/main/java'
+        }
+        resources {
+        }
+    }
+}
+
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+    }
+
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            {
+                task.plugins {
+                    grpc {}
+                }
+                task.builtins {
+                    openapiv2 {}
+                }
+            }
+
+        }
+    }
+}
+
+
+compileJava {
+    dependsOn 'openApiGenerate', 'openApiGenerateJavaClient'
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$buildDir/generated/source/proto/main/openapiv2/sample/v1/services/simple_sample.swagger.json".toString()
+    outputDir = "$buildDir/generated-swagger".toString()
+    apiPackage = "ru.rost.sample.rest.api"
+    invokerPackage = "ru.rost.sample.rest.invoker"
+    modelPackage = "ru.rost.sample.rest.model"
+    configOptions = [
+            dateLibrary  : "java8",
+            interfaceOnly: "true",
+            useTags      : "true",
+    ]
+}
+
+task openApiGenerateJavaClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$buildDir/generated/source/proto/main/openapiv2/sample/v1/services/simple_sample.swagger.json".toString()
+    outputDir = "$buildDir/java-client".toString()
+    apiPackage = "ru.rost.sample.client.vanilla.api"
+    invokerPackage = "ru.rost.sample.client.vanilla.invoker"
+    modelPackage = "ru.rost.sample.client.vanilla.model"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "native",
+            useTags    : "true",
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+}
+
+publishing {
+    publications {
+        pub(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}

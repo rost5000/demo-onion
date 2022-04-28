@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package sample.v1.models;
+
+import public "google/protobuf/timestamp.proto";
+import public "google/type/money.proto";
+
+
+option go_package = "github.com/ovp/protos/demo-onion";
+option java_package = "ru.rost.sample";
+option java_multiple_files = true;
+
+message SimpleSampleModel {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp dateTime = 3;
+  google.type.Money money = 4;
+
+}

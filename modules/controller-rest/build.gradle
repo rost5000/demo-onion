@@ -1,0 +1,16 @@
+dependencies {
+    implementation(
+            project(':domain'),
+            project(':usecase'),
+            project(':protobuf-demo-onion'),
+            "org.mapstruct:mapstruct:$mapstructVersion",
+    )
+
+    annotationProcessor(
+            "org.mapstruct:mapstruct-processor:$mapstructVersion"
+    )
+
+    testAnnotationProcessor(
+            "org.mapstruct:mapstruct-processor:$mapstructVersion"
+    )
+}

@@ -1,0 +1,1 @@
+This is domain module. It used for share objects between modules.

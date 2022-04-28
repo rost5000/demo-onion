@@ -1,0 +1,22 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+dependencies {
+    implementation (
+            project(':domain'),
+            project(':repository-jpa'),
+            project(':controller-rest'),
+            project(':protobuf-demo-onion'),
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-actuator",
+    )
+    testImplementation (
+            "org.springframework.boot:spring-boot-starter-test",
+            "org.testcontainers:testcontainers:$testcontainerVersion",
+            "org.testcontainers:junit-jupiter:$testcontainerVersion",
+            "org.testcontainers:kafka:$testcontainerVersion",
+            "org.testcontainers:postgresql:$testcontainerVersion",
+    )
+}
