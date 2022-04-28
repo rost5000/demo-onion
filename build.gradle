@@ -1,0 +1,61 @@
+plugins {
+    id 'org.springframework.boot' version "$springBootVersion" apply false
+    id 'io.spring.dependency-management' version "$springBootDependencyManagementVersion" apply false
+    id 'org.hidetake.swagger.generator' version "$swaggerGeneratorVersion" apply false
+    id "com.google.protobuf" version "$protobufPluginVersion" apply false
+    id 'com.github.johnrengelman.shadow' version "$shadowJarGeneratorVersion" apply false
+    id "org.openapi.generator" version "$openapiGeneratorVersion" apply false
+}
+subprojects {
+
+    apply plugin: 'java-library'
+
+    group = 'ru.rost.example'
+    version = System.getenv("BUILD_SYSTEM") != null ? System.getenv("BUILD_SYSTEM") : "1.0.0-SNAPSHOT"
+    sourceCompatibility = '17'
+
+    repositories {
+        mavenCentral()
+    }
+
+    compileJava.options.encoding = "UTF-8"
+    compileTestJava.options.encoding = "UTF-8"
+
+
+    dependencies {
+        implementation(
+                "org.joda:joda-money:$jodaMoneyVersion",
+                "org.slf4j:slf4j-api",
+                "org.projectlombok:lombok",
+                'org.springframework:spring-web',
+                'org.springframework:spring-context',
+                platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"),
+
+        )
+
+        annotationProcessor(
+                'org.projectlombok:lombok',
+                "org.mapstruct:mapstruct-processor:$mapstructVersion",
+                platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"),
+        )
+        testAnnotationProcessor(
+                'org.projectlombok:lombok',
+                "org.mapstruct:mapstruct-processor:$mapstructVersion",
+                platform("org.springframework.boot:spring-boot-dependencies:$springBootVersion"),
+        )
+        testImplementation (
+                "org.junit.jupiter:junit-jupiter:$jUnitVersion",
+                "org.junit.jupiter:junit-jupiter-api:$jUnitVersion",
+                "org.junit.jupiter:junit-jupiter-engine:$jUnitVersion",
+                "org.junit.jupiter:junit-jupiter-params:$jUnitVersion",
+                "org.junit.platform:junit-platform-commons:$jUnitPlatformVersion",
+                "org.junit.platform:junit-platform-launcher:$jUnitPlatformVersion",
+                "org.mockito:mockito-junit-jupiter:$mockitoVersion",
+                "org.springframework.boot:spring-boot-starter-test",
+        )
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}

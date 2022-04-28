@@ -1,0 +1,11 @@
+rootProject.name = 'demo-onion'
+
+
+include 'domain', 'usecase', 'infrastructure', 'repository-jpa', 'protobuf-demo-onion', 'controller-rest'
+
+project(':domain').projectDir = file 'modules/domain'
+project(':usecase').projectDir = file 'modules/usecase'
+project(':infrastructure').projectDir = file 'modules/infrastructure'
+project(':repository-jpa').projectDir = file 'modules/repository-jpa'
+project(':protobuf-demo-onion').projectDir = file 'modules/protobuf-demo-onion'
+project(':controller-rest').projectDir = file 'modules/controller-rest'
